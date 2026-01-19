@@ -12,13 +12,6 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
-
-    - name: Debug DNS resolution
-      run: |
-        echo "Testing DNS resolution for shiny.regiondalarna.se"
-        nslookup shiny.regiondalarna.se || true
-        dig shiny.regiondalarna.se || true
-        echo "SSH_HOST secret value (should be masked): ${{ secrets.SSH_HOST }}"
         
     - name: Create directory on server
       uses: appleboy/ssh-action@master
