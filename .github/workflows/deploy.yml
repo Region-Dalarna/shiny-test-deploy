@@ -35,4 +35,3 @@ jobs:
           sudo find "$APP_DIR" -type d -exec chmod g+s {} \;
 
           echo "Deployed shiny-test-deploy (app/ -> $APP_DIR)"
-``
