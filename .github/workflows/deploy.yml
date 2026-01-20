@@ -11,8 +11,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      
+
       - name: Deploy app using server-side script
         run: |
           TEMP_DIR="${GITHUB_WORKSPACE}/app"
-          sudo /usr/bin/bash /usr/local/bin/shiny_deploy.sh shiny-test-deploy "$TEMP_DIR"
+          /usr/local/bin/shiny_deploy.sh shiny-test-deploy "$TEMP_DIR"
