@@ -1,35 +1,38 @@
-name: Deploy to Shiny Server
+name: Deploy shiny-test-deploy to Shiny server
 
 on:
   push:
-    branches: [ main ]
-  workflow_dispatch:
+    branches: [ main ]    # ändra om ni deployar från annan branch
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
-    
+    # Kör på din self-hosted runner på wfalmitvs978
+    runs-on: [ self-hosted, shiny ]
+
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-        
-    - name: Create directory on server
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.SSH_HOST }}
-        username: ${{ secrets.SSH_USER }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        port: ${{ secrets.SSH_PORT }}
-        script: |
-          mkdir -p /srv/shiny-server/test-app
-    
-    - name: Copy files to server
-      uses: appleboy/scp-action@master
-      with:
-        host: ${{ secrets.SSH_HOST }}
-        username: ${{ secrets.SSH_USER }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        port: ${{ secrets.SSH_PORT }}
-        source: "app/*"
-        target: "/srv/shiny-server/test-app/"
-        strip_components: 1
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Deploy app to Shiny Server
+        run: |
+          # Katalogen där appen ska ligga på servern
+          APP_DIR="/srv/shiny-server/shiny-test-deploy"
+
+          # Skapa app-katalogen om den inte finns
+          sudo mkdir -p "$APP_DIR"
+
+          # Rensa bort befintligt innehåll i app-katalogen
+          sudo rm -rf "${APP_DIR:?}/"*
+
+          # Kopiera innehållet från undermappen "app" i repot till app-katalogen
+          sudo cp -r ./app/* "$APP_DIR/"
+
+          # Sätt rätt ägare och grupp
+          sudo chown -R shiny-deploy:shinyapps "$APP_DIR"
+
+          # Sätt rätt rättigheter
+          sudo chmod -R 750 "$APP_DIR"
+          sudo find "$APP_DIR" -type d -exec chmod g+s {} \;
+
+          echo "Deployed shiny-test-deploy (app/ -> $APP_DIR)"
+``
