@@ -15,4 +15,4 @@ jobs:
       - name: Deploy app using server-side script
         run: |
           TEMP_DIR="${GITHUB_WORKSPACE}/app"
-          sudo /usr/local/bin/shiny_deploy.sh shiny-test-deploy "$TEMP_DIR"
+          sudo bash /usr/local/bin/shiny_deploy.sh shiny-test-deploy "$TEMP_DIR"
