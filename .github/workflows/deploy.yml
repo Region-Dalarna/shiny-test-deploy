@@ -1,37 +1,18 @@
-name: Deploy shiny-test-deploy to Shiny server
+name: Deploy shiny-test-deploy
 
 on:
   push:
-    branches: [ main ]    # ändra om ni deployar från annan branch
+    branches: [ main ]
 
 jobs:
   deploy:
-    # Kör på din self-hosted runner på wfalmitvs978
     runs-on: [ self-hosted, shiny ]
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Deploy app to Shiny Server
+      - name: Deploy app using server-side script
         run: |
-          # Katalogen där appen ska ligga på servern
-          APP_DIR="/srv/shiny-server/shiny-test-deploy"
-
-          # Skapa app-katalogen om den inte finns
-          sudo mkdir -p "$APP_DIR"
-
-          # Rensa bort befintligt innehåll i app-katalogen
-          sudo rm -rf "${APP_DIR:?}/"*
-
-          # Kopiera innehållet från undermappen "app" i repot till app-katalogen
-          sudo cp -r ./app/* "$APP_DIR/"
-
-          # Sätt rätt ägare och grupp
-          sudo chown -R shiny-deploy:shinyapps "$APP_DIR"
-
-          # Sätt rätt rättigheter
-          sudo chmod -R 750 "$APP_DIR"
-          sudo find "$APP_DIR" -type d -exec chmod g+s {} \;
-
-          echo "Deployed shiny-test-deploy (app/ -> $APP_DIR)"
+          TEMP_DIR="${GITHUB_WORKSPACE}/app"
+          sudo /usr/local/bin/shiny_deploy.sh shiny-test-deploy "$TEMP_DIR"
