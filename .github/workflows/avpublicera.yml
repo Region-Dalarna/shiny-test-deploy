@@ -44,7 +44,7 @@ jobs:
 
           if [ -d "$APP_DIR" ]; then
             echo "Tar bort $APP_DIR"
-            sudo rm -rf "$APP_DIR"
+            rm -rf "$APP_DIR"
             echo "App borttagen."
           else
             echo "Ingen app hittades i $APP_DIR — inget att ta bort."
